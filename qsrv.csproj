@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="ApiRequests\" />
+    <Folder Include="ApiResponses\" />
+    <Folder Include="Config\" />
+    <Folder Include="Security\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Scrypt.NET" Version="1.3.0" />
+    <PackageReference Include="System.Security.Cryptography.Cng" Version="4.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="washared">
+      <HintPath>..\..\..\..\..\Programming\CS\wa_backend\washared\bin\Release\netcoreapp3.1\washared.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
