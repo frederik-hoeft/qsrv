@@ -10,10 +10,9 @@
         public readonly bool SuppressCertificateErrors;
         public readonly WamsrvInterfaceConfig WamsrvInterfaceConfig;
         public readonly WamsrvSecurityConfig WamsrvSecurityConfig;
-        public readonly WamsrvEmailConfig WamsrvEmailConfig;
         public readonly WamsrvDevelopmentConfig WamsrvDevelopmentConfig;
 
-        public WamsrvConfig(bool debuggingEnabled, bool advancedErrorChecking, int localPort, string pfxCertificatePath, string pfxPassword, bool suppressCertificateErrors, WamsrvInterfaceConfig wamsrvInterfaceConfig, WamsrvSecurityConfig wamsrvSecurityConfig, WamsrvEmailConfig wamsrvEmailConfig, WamsrvDevelopmentConfig wamsrvDevelopmentConfig)
+        public WamsrvConfig(bool debuggingEnabled, bool advancedErrorChecking, int localPort, string pfxCertificatePath, string pfxPassword, bool suppressCertificateErrors, WamsrvInterfaceConfig wamsrvInterfaceConfig, WamsrvSecurityConfig wamsrvSecurityConfig, WamsrvDevelopmentConfig wamsrvDevelopmentConfig)
         {
             DebuggingEnabled = debuggingEnabled;
             AdvancedErrorChecking = advancedErrorChecking;
@@ -23,7 +22,6 @@
             SuppressCertificateErrors = suppressCertificateErrors;
             WamsrvInterfaceConfig = wamsrvInterfaceConfig;
             WamsrvSecurityConfig = wamsrvSecurityConfig;
-            WamsrvEmailConfig = wamsrvEmailConfig;
             WamsrvDevelopmentConfig = wamsrvDevelopmentConfig;
         }
     }

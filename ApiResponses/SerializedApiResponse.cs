@@ -35,22 +35,8 @@ namespace qsrv.ApiResponses
     public enum ResponseId
     {
         Error = -1,
-        GetEventInfo = 0,
-        GetEventA = 1,
-        CreateCookie = 2,
-        CreateAccount = 3,
-        ConfirmAccount = 4,
-        UpdateAccountInfo = 5,
-        GetAccountInfo = 6,
-        PasswordChange = 7,
-        ConfirmPasswordChange = 8,
-        PasswordReset = 9,
-        ConfirmPasswordReset = 10,
-        CreateEvent = 11,
-        EditEventA = 12,
-        DeleteEventA = 13,
-        GetAllEvents = 14,
-        ChangeUserPermissionsA = 15,
-        DeleteAccount = 16,
+        GetQuestions = 0,
+        GetHighscores = 1,
+        SetHighscore = 2
     }
 }

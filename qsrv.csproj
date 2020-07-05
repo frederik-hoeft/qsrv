@@ -10,8 +10,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ApiRequests\" />
-    <Folder Include="ApiResponses\" />
+    <None Remove="ApiRequests\SetHighscoreRequest.cs~RF14497d2.TMP" />
+    <None Remove="ApiResponses\GetHighscoresResponse.cs~RF19ebba8.TMP" />
+    <None Remove="ApiResponses\GetQuestionsResponse.cs~RF148e3fe.TMP" />
+    <None Remove="Program.cs~RF1e127e4.TMP" />
+    <None Remove="Question.cs~RF1874b2a.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Config\" />
     <Folder Include="Security\" />
   </ItemGroup>

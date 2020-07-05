@@ -1,5 +1,5 @@
 {
-  "DebuggingEnabled": false,
+  "DebuggingEnabled": true,
   "AdvancedErrorChecking": true,
   "LocalPort": 11001,
   "PfxCertificatePath": "certificate.pfx",
@@ -17,13 +17,6 @@
     "TwoFactorCodeLength": 6,
     "SecurityTokenExpirationTime": 2592000,
     "ServerSecret": "3Dtj+k2a3AhjvIySJ8+eufN2r+7FhQ1Kn+aibKyLu72BaSO1mDkmb5WYlzWuO12OlrGk2j6zZOJdUxc+E+gK2A=="
-  },
-  "WamsrvEmailConfig": {
-    "EmailDisplayName": "Support Team",
-    "EmailAddress": "development1@gmx.de",
-    "EmailPassword": "9G&694,zS-l-x@4Q2@QsH]U~Q2/{EPBa46N%__!]",
-    "SmptServer": "mail.gmx.com",
-    "SmptServerPort": 465
   },
   "WamsrvDevelopmentConfig": {
     "BlockResponses": true

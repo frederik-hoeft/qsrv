@@ -5,6 +5,7 @@ using System.Text;
 using qsrv.ApiRequests;
 using qsrv.Database;
 using washared;
+using qsrv.ApiResponses;
 
 namespace qsrv
 {
@@ -13,7 +14,6 @@ namespace qsrv
     /// </summary>
     public sealed class ApiServer : DisposableNetworkInterface
     {
-        public Account Account { get; set; } = null;
         public readonly UnitTesting UnitTesting = new UnitTesting();
         private ApiRequestId requestId = ApiRequestId.Invalid;
         private bool isConnected = false;
@@ -102,23 +102,26 @@ namespace qsrv
         {
             string json = Encoding.UTF8.GetString(packet);
             SerializedApiRequest serializedApiRequest = JsonConvert.DeserializeObject<SerializedApiRequest>(json);
-            ApiRequest apiRequest = serializedApiRequest.Deserialize();
-            apiRequest.Process(this);
+            try
+            {
+                ApiRequest apiRequest = serializedApiRequest.Deserialize();
+                if (apiRequest == null)
+                {
+                    ApiError.Throw(ApiErrorCode.NotFound, this, "No request available under this ID.");
+                    return;
+                }
+                apiRequest.Process(this);
+            }
+            catch
+            {
+                ApiError.Throw(ApiErrorCode.InternalServerError, this, "Failed to parse packet!");
+            }
         }
 
         public async override void Dispose()
         {
             isConnected = false;
             Finalizer();
-            try
-            {
-                if (Account != null && !string.IsNullOrEmpty(Account.Id))
-                {
-                    using DatabaseManager databaseManager = new DatabaseManager(this);
-                    await databaseManager.SetUserOffline();
-                }
-            }
-            catch { }
             MainServer.ClientCount--;
             base.Dispose();
         }

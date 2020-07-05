@@ -58,21 +58,12 @@ namespace qsrv.ApiResponses
 
     public enum ApiErrorCode
     {
-        Ok = -1,
-        InvalidToken = 0,
-        InternalServerError = 1,
-        InvalidCredentials = 2,
-        InvalidUser = 3,
-        AlreadyOnline = 4,
-        InvalidEmailAddress = 5,
-        InvalidContext = 6,
-        InvalidCode = 7,
-        ExpiredCode = 8,
-        InvalidState = 9,
-        DatabaseException = 10,
-        InvalidArgument = 11,
-        InsufficientPermissions = 12,
-        AccessDenied = 13,
-        NotFound = 14,
+        Ok = 200,
+        InvalidUser = 401,
+        Forbidden = 403,
+        NotFound = 404,
+        InvalidArgument = 422,
+        InternalServerError = 500,
+        DatabaseException = 503,
     }
 }
