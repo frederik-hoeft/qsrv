@@ -6,6 +6,7 @@ using qsrv.ApiRequests;
 using qsrv.Database;
 using washared;
 using qsrv.ApiResponses;
+using System.Threading;
 
 namespace qsrv
 {
@@ -98,7 +99,7 @@ namespace qsrv
             }
         }
 
-        private void PacketActionCallback(byte[] packet)
+        private async void PacketActionCallback(byte[] packet)
         {
             string json = Encoding.UTF8.GetString(packet);
             SerializedApiRequest serializedApiRequest = JsonConvert.DeserializeObject<SerializedApiRequest>(json);
@@ -118,7 +119,7 @@ namespace qsrv
             }
         }
 
-        public async override void Dispose()
+        public override void Dispose()
         {
             isConnected = false;
             Finalizer();

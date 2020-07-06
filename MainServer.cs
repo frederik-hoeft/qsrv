@@ -6,6 +6,8 @@ using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using qsrv.Config;
+using qsrv.ApiRequests;
+using System.Diagnostics;
 
 namespace qsrv
 {
@@ -19,7 +21,7 @@ namespace qsrv
         public static int ClientCount = 0;
         public static X509Certificate2 ServerCertificate;
 
-        public static void Run()
+        public static async System.Threading.Tasks.Task RunAsync()
         {
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = washared.Extensions.GetLocalIPAddress();

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -10,9 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ApiRequests\GetHighscoresRequest.cs~RF81d49f.TMP" />
     <None Remove="ApiRequests\SetHighscoreRequest.cs~RF14497d2.TMP" />
     <None Remove="ApiResponses\GetHighscoresResponse.cs~RF19ebba8.TMP" />
     <None Remove="ApiResponses\GetQuestionsResponse.cs~RF148e3fe.TMP" />
+    <None Remove="Highscore.cs~RF8ead9f.TMP" />
     <None Remove="Program.cs~RF1e127e4.TMP" />
     <None Remove="Question.cs~RF1874b2a.TMP" />
   </ItemGroup>
@@ -30,8 +32,17 @@
 
   <ItemGroup>
     <Reference Include="washared">
-      <HintPath>..\..\..\..\..\Programming\CS\wa_backend\washared\bin\Release\netcoreapp3.1\washared.dll</HintPath>
+      <HintPath>..\..\..\..\..\Programming\CS\wa_backend\washared\bin\Debug\netcoreapp3.1\washared.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="certificate.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Config\wamsrv.config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

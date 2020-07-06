@@ -105,7 +105,11 @@ namespace qsrv.Database
             {
                 return;
             }
-            packetParser.ShutdownAsync();
+            try
+            {
+                packetParser.Dispose();
+            }
+            catch (ObjectDisposedException) { }
             if (sqlClient != null)
             {
                 try

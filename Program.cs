@@ -16,7 +16,7 @@ namespace qsrv
         private static void Main()
         {
             MainServer.LoadConfig();
-            MainServer.Run();
+            MainServer.RunAsync();
         }
     }
 }

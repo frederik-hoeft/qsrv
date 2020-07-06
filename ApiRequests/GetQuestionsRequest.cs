@@ -3,6 +3,8 @@ using qsrv.Database;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using washared.DatabaseServer;
 using washared.DatabaseServer.ApiResponses;
 
@@ -18,8 +20,10 @@ namespace qsrv.ApiRequests
             Category = category;
             Count = count;
         }
-        public async override void Process(ApiServer server)
+        private protected async override void ProcessAsync(ApiServer server, ManualResetEvent manualResetEvent)
         {
+            using ProcessThreadHelper processThreadHelper = new ProcessThreadHelper(manualResetEvent);
+            server.RequestId = RequestId;
             server.UnitTesting.RequestId = RequestId;
             server.UnitTesting.MethodSuccess = false;
             if (Count < 1)
@@ -75,7 +79,7 @@ namespace qsrv.ApiRequests
             GetQuestionsResponse response = new GetQuestionsResponse(questions);
             SerializedApiResponse serializedApiResponse = SerializedApiResponse.Create(response);
             string json = serializedApiResponse.Serialize();
-            server.Network.Send(json);
+            server.Send(json);
             server.UnitTesting.MethodSuccess = true;
             server.UnitTesting.ErrorCode = ApiErrorCode.Ok;
         }

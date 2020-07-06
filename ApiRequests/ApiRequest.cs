@@ -1,4 +1,7 @@
-﻿namespace qsrv.ApiRequests
+﻿using System.Threading;
+using System.Threading.Tasks;
+
+namespace qsrv.ApiRequests
 {
     /// <summary>
     /// Api request base class
@@ -7,6 +10,14 @@
     {
         public ApiRequestId RequestId;
 
-        public abstract void Process(ApiServer server);
+        public virtual void Process(ApiServer server)
+        {
+            ManualResetEvent manualResetEvent = new ManualResetEvent(false);
+            manualResetEvent.Reset();
+            ProcessAsync(server, manualResetEvent);
+            manualResetEvent.WaitOne(Timeout.Infinite);
+        }
+
+        private protected abstract void ProcessAsync(ApiServer server, ManualResetEvent manualResetEvent);
     }
 }
