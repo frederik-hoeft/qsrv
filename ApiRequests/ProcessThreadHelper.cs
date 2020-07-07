@@ -7,8 +7,8 @@ namespace qsrv.ApiRequests
 {
     public class ProcessThreadHelper : IDisposable
     {
-        private readonly ManualResetEvent manualResetEvent;
-        public ProcessThreadHelper(ManualResetEvent manualResetEvent)
+        private readonly ManualResetEventSlim manualResetEvent;
+        public ProcessThreadHelper(ManualResetEventSlim manualResetEvent)
         {
             this.manualResetEvent = manualResetEvent;
         }

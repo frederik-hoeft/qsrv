@@ -35,24 +35,24 @@ namespace qsrv.ApiResponses
             return JsonConvert.SerializeObject(this);
         }
 
-        public static void Throw(ApiErrorCode errorCode, ApiServer server, string message, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
+        public static void Throw(ApiErrorCode errorCode, ApiContext context, string message, [CallerMemberName] string memberName = "", [CallerFilePath] string sourceFilePath = "", [CallerLineNumber] int sourceLineNumber = 0)
         {
             TargetSite targetSite = null;
             if (MainServer.Config.DebuggingEnabled)
             {
                 targetSite = new TargetSite(memberName, sourceFilePath, sourceLineNumber);
             }
-            ApiError apiError = new ApiError(errorCode, server.RequestId, message, targetSite);
+            ApiError apiError = new ApiError(errorCode, context.RequestId, message, targetSite);
             string json = apiError.Serialize();
             Debug.WriteLine("xx " + json.Replace("\\\\", "\\"));
-            if (server == null)
+            if (context.Server == null)
             {
                 return;
             }
             SerializedApiResponse apiResponse = SerializedApiResponse.Create(ResponseId.Error, json);
-            server.Send(apiResponse.Serialize());
-            server.UnitTesting.MethodSuccess = false;
-            server.UnitTesting.ErrorCode = errorCode;
+            context.Server.Send(apiResponse.Serialize());
+            context.UnitTest.MethodSuccess = false;
+            context.UnitTest.ErrorCode = errorCode;
         }
     }
 

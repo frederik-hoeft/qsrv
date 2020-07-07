@@ -6,13 +6,13 @@ namespace qsrv.ApiResponses
 {
     public class GetQuestionsResponse : ApiResponse
     {
-        public Question[] Questions { get; }
-        public int Count { get; }
+        public readonly Question[] Questions;
+        public readonly int Count;
         public GetQuestionsResponse(Question[] questions)
         {
             ResponseId = ResponseId.GetQuestions;
             Questions = questions;
-            Count = questions.Length;
+            Count = questions?.Length ?? -1;
         }
     }
 }

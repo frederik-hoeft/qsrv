@@ -13,16 +13,16 @@ namespace qsrv.Database
     /// <summary>
     /// To be used with 'using -> opens connection to local wadbsrv.exe
     /// </summary
-    public partial class DatabaseManager : IDisposable
+    public sealed class DatabaseManager : IDisposable
     {
         private SqlClient sqlClient = null;
         private bool isInitialized = false;
         private PacketParser packetParser = null;
-        private readonly ApiServer server;
+        private readonly ApiContext context;
 
-        public DatabaseManager(ApiServer server)
+        public DatabaseManager(ApiContext context)
         {
-            this.server = server;
+            this.context = context;
         }
 
         private void Inititalize()
@@ -63,13 +63,13 @@ namespace qsrv.Database
             }
             if (response == null)
             {
-                ApiError.Throw(ApiErrorCode.InternalServerError, server, "Database request timed out.");
+                ApiError.Throw(ApiErrorCode.InternalServerError, context, "Database request timed out.");
                 return new DatabaseResult(null, false);
             }
             if (response.ResponseId == SqlResponseId.Error)
             {
                 SqlErrorResponse sqlError = (SqlErrorResponse)response;
-                ApiError.Throw(ApiErrorCode.DatabaseException, server, sqlError.Message);
+                ApiError.Throw(ApiErrorCode.DatabaseException, context, sqlError.Message);
                 return new DatabaseResult(null, false);
             }
             return new DatabaseResult(response, true);

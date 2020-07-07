@@ -13,3 +13,7 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:wamsrv.SqlClient.Dispose")]
 [assembly: SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:wamsrv.Database.DatabaseManager.Dispose")]
 [assembly: SuppressMessage("Design", "CA1063:Implement IDisposable Correctly", Justification = "<Pending>", Scope = "type", Target = "~T:wamsrv.DisposableNetworkInterface")]
+[assembly: SuppressMessage("Design", "CA1063:Implement IDisposable Correctly", Justification = "<Pending>", Scope = "type", Target = "~T:qsrv.ApiRequests.ProcessThreadHelper")]
+[assembly: SuppressMessage("Naming", "RCS1047:Non-asynchronous method name should not end with 'Async'.", Justification = "<Pending>", Scope = "member", Target = "~M:qsrv.ApiRequests.ApiRequest.ProcessAsync(qsrv.ApiServer,System.Threading.ManualResetEvent)")]
+[assembly: SuppressMessage("Design", "CA1063:Implement IDisposable Correctly", Justification = "<Pending>", Scope = "type", Target = "~T:qsrv.DisposableNetworkInterface")]
+[assembly: SuppressMessage("Naming", "RCS1047:Non-asynchronous method name should not end with 'Async'.", Justification = "<Pending>", Scope = "member", Target = "~M:qsrv.ApiRequests.ApiRequest.ProcessAsync(qsrv.ApiServer,System.Threading.ManualResetEventSlim)")]

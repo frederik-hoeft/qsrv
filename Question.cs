@@ -6,10 +6,18 @@ namespace qsrv
 {
     public class Question
     {
-        internal string Id { get; } = string.Empty;
-        public string Text { get; } = string.Empty;
-        public Answer[] Answers { get; }
-        public Category Category { get; }
+        internal readonly string Id = string.Empty;
+        public readonly string Text = string.Empty;
+        public readonly Answer[] Answers;
+        public readonly Category Category;
+
+        internal Question(string text, Answer[] answers, Category category)
+        {
+            Text = text;
+            Answers = answers;
+            Category = category;
+        }
+
         public Question(string id, string text, Answer[] answers, Category category)
         {
             Id = id;
@@ -30,5 +38,8 @@ namespace qsrv
     {
         Undefined = -1,
         Psychology = 1,
+        Science = 2,
+        Everyday = 3,
+        Nerdistan = 4,
     }
 }

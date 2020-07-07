@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using qsrv.ApiResponses;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace qsrv.ApiRequests
@@ -9,15 +10,30 @@ namespace qsrv.ApiRequests
     public abstract class ApiRequest
     {
         public ApiRequestId RequestId;
+        public ApiContext Context { get; private protected set; }
+
+        private protected bool isStale = false;
+
+        private protected ApiRequest(ApiRequestId requestId)
+        {
+            Context = new ApiContext(requestId);
+        }
 
         public virtual void Process(ApiServer server)
         {
-            ManualResetEvent manualResetEvent = new ManualResetEvent(false);
+            Context.Server = server;
+            if (isStale)
+            {
+                ApiError.Throw(ApiErrorCode.InternalServerError, Context, "Stale Request: tried to process same request more than once.");
+                return;
+            }
+            ManualResetEventSlim manualResetEvent = new ManualResetEventSlim(false);
             manualResetEvent.Reset();
             ProcessAsync(server, manualResetEvent);
-            manualResetEvent.WaitOne(Timeout.Infinite);
+            manualResetEvent.Wait(Timeout.Infinite);
+            isStale = true;
         }
 
-        private protected abstract void ProcessAsync(ApiServer server, ManualResetEvent manualResetEvent);
+        private protected abstract void ProcessAsync(ApiServer server, ManualResetEventSlim manualResetEvent);
     }
 }

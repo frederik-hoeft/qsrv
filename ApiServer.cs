@@ -7,6 +7,7 @@ using qsrv.Database;
 using washared;
 using qsrv.ApiResponses;
 using System.Threading;
+using System;
 
 namespace qsrv
 {
@@ -15,19 +16,7 @@ namespace qsrv
     /// </summary>
     public sealed class ApiServer : DisposableNetworkInterface
     {
-        public readonly UnitTesting UnitTesting = new UnitTesting();
-        private ApiRequestId requestId = ApiRequestId.Invalid;
         private bool isConnected = false;
-
-        public ApiRequestId RequestId
-        {
-            get { return requestId; }
-            set
-            {
-                requestId = value;
-                UnitTesting.RequestId = value;
-            }
-        }
 
         #region Constructor
 
@@ -99,7 +88,7 @@ namespace qsrv
             }
         }
 
-        private async void PacketActionCallback(byte[] packet)
+        private void PacketActionCallback(byte[] packet)
         {
             string json = Encoding.UTF8.GetString(packet);
             SerializedApiRequest serializedApiRequest = JsonConvert.DeserializeObject<SerializedApiRequest>(json);
@@ -108,14 +97,14 @@ namespace qsrv
                 ApiRequest apiRequest = serializedApiRequest.Deserialize();
                 if (apiRequest == null)
                 {
-                    ApiError.Throw(ApiErrorCode.NotFound, this, "No request available under this ID.");
+                    ApiError.Throw(ApiErrorCode.NotFound, new ApiContext(this, apiRequest.RequestId), "No request available under this ID.");
                     return;
                 }
                 apiRequest.Process(this);
             }
-            catch
+            catch (JsonException)
             {
-                ApiError.Throw(ApiErrorCode.InternalServerError, this, "Failed to parse packet!");
+                ApiError.Throw(ApiErrorCode.InternalServerError, new ApiContext(this, ApiRequestId.Invalid), "Failed to parse packet!");
             }
         }
 

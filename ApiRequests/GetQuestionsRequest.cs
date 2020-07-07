@@ -15,30 +15,26 @@ namespace qsrv.ApiRequests
         public int Count { get; }
         public Category Category { get; } = Category.Undefined;
 
-        public GetQuestionsRequest(int count, Category category)
+        public GetQuestionsRequest(int count, Category category) : base(ApiRequestId.GetQuestions)
         {
             Category = category;
             Count = count;
         }
-        private protected async override void ProcessAsync(ApiServer server, ManualResetEvent manualResetEvent)
+        private protected async override void ProcessAsync(ApiServer server, ManualResetEventSlim manualResetEvent)
         {
             using ProcessThreadHelper processThreadHelper = new ProcessThreadHelper(manualResetEvent);
-            server.RequestId = RequestId;
-            server.UnitTesting.RequestId = RequestId;
-            server.UnitTesting.MethodSuccess = false;
+            Context.UnitTest.MethodSuccess = false;
             if (Count < 1)
             {
-                ApiError.Throw(ApiErrorCode.InvalidArgument, server, "Count cannot be less than 1.");
-                server.UnitTesting.ErrorCode = ApiErrorCode.InvalidArgument;
+                ApiError.Throw(ApiErrorCode.InvalidArgument, Context, "Count cannot be less than 1.");
                 return;
             }
-            using DatabaseManager databaseManager = new DatabaseManager(server);
-            string query = "SELECT COUNT id FROM Tbl_questions" + (Category == Category.Undefined ? ";" : "WHERE category = " + ((int)Category).ToString() + ";");
+            using DatabaseManager databaseManager = new DatabaseManager(Context);
+            string query = "SELECT COUNT(id) FROM Tbl_questions" + (Category == Category.Undefined ? ";" : "WHERE category = " + ((int)Category).ToString() + ";");
             SqlApiRequest request = SqlApiRequest.Create(SqlRequestId.GetSingleOrDefault, query, 1);
             Optional<SqlSingleOrDefaultResponse> optionalCount = await databaseManager.GetSingleOrDefaultResponseAsync(request);
             if (!optionalCount.Success || !optionalCount.Result.Success)
             {
-                server.UnitTesting.ErrorCode = ApiErrorCode.DatabaseException;
                 return;
             }
             int availableQuestions = Convert.ToInt32(optionalCount.Result.Result);
@@ -49,7 +45,6 @@ namespace qsrv.ApiRequests
             Optional<Sql2DArrayResponse> optionalQuestions = await databaseManager.Get2DArrayResponseAsync(request);
             if (!optionalQuestions.Success || !optionalQuestions.Result.Success)
             {
-                server.UnitTesting.ErrorCode = ApiErrorCode.DatabaseException;
                 return;
             }
             for (int i = 0; i < count; i++)
@@ -61,13 +56,11 @@ namespace qsrv.ApiRequests
                 Optional<Sql2DArrayResponse> optionalAnswers = await databaseManager.Get2DArrayResponseAsync(request);
                 if (!optionalAnswers.Success || !optionalAnswers.Result.Success)
                 {
-                    server.UnitTesting.ErrorCode = ApiErrorCode.DatabaseException;
                     return;
                 }
                 if (optionalAnswers.Result.Result.Length != 4)
                 {
-                    ApiError.Throw(ApiErrorCode.InternalServerError, server, "Assertion error: Expected 4 answers for question #" + question[0] + " but got " + optionalAnswers.Result.Result.Length.ToString() + " instead!");
-                    server.UnitTesting.ErrorCode = ApiErrorCode.InternalServerError;
+                    ApiError.Throw(ApiErrorCode.InternalServerError, Context, "Assertion error: Expected 4 answers for question #" + question[0] + " but got " + optionalAnswers.Result.Result.Length.ToString() + " instead!");
                     return;
                 }
                 for (int j = 0; j < 4; j++)
@@ -80,8 +73,8 @@ namespace qsrv.ApiRequests
             SerializedApiResponse serializedApiResponse = SerializedApiResponse.Create(response);
             string json = serializedApiResponse.Serialize();
             server.Send(json);
-            server.UnitTesting.MethodSuccess = true;
-            server.UnitTesting.ErrorCode = ApiErrorCode.Ok;
+            Context.UnitTest.MethodSuccess = true;
+            Context.UnitTest.ErrorCode = ApiErrorCode.Ok;
         }
     }
 }

@@ -13,30 +13,25 @@ namespace qsrv.ApiRequests
     public class GetHighscoresRequest : ApiRequest
     {
         public int Count { get; }
-        public GetHighscoresRequest(int count)
+        public GetHighscoresRequest(int count) : base(ApiRequestId.GetHighscores)
         {
             Count = count;
         }
 
-        private protected override async void ProcessAsync(ApiServer server, ManualResetEvent manualResetEvent)
+        private protected override async void ProcessAsync(ApiServer server, ManualResetEventSlim manualResetEvent)
         {
             using ProcessThreadHelper processThreadHelper = new ProcessThreadHelper(manualResetEvent);
-            server.RequestId = RequestId;
-            server.UnitTesting.RequestId = RequestId;
-            server.UnitTesting.MethodSuccess = false;
             if (Count < 1)
             {
-                ApiError.Throw(ApiErrorCode.InvalidArgument, server, "Count cannot be less than 1.");
-                server.UnitTesting.ErrorCode = ApiErrorCode.InvalidArgument;
+                ApiError.Throw(ApiErrorCode.InvalidArgument, Context, "Count cannot be less than 1.");
                 return;
             }
-            using DatabaseManager databaseManager = new DatabaseManager(server);
+            using DatabaseManager databaseManager = new DatabaseManager(Context);
             string query = "SELECT player, score FROM Tbl_highscore ORDER BY score DESC LIMIT " + Count.ToString() + ";";
             SqlApiRequest request = SqlApiRequest.Create(SqlRequestId.Get2DArray, query, 2);
             Optional<Sql2DArrayResponse> optional2DArray = await databaseManager.Get2DArrayResponseAsync(request);
             if (!optional2DArray.Success || !optional2DArray.Result.Success)
             {
-                server.UnitTesting.ErrorCode = ApiErrorCode.DatabaseException;
                 return;
             }
             int count = optional2DArray.Result.Result.Length;
@@ -50,8 +45,8 @@ namespace qsrv.ApiRequests
             SerializedApiResponse serializedApiResponse = SerializedApiResponse.Create(response);
             string json = serializedApiResponse.Serialize();
             server.Send(json);
-            server.UnitTesting.MethodSuccess = true;
-            server.UnitTesting.ErrorCode = ApiErrorCode.Ok;
+            Context.UnitTest.MethodSuccess = true;
+            Context.UnitTest.ErrorCode = ApiErrorCode.Ok;
         }
     }
 }

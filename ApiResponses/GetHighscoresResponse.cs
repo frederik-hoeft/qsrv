@@ -6,8 +6,8 @@ namespace qsrv.ApiResponses
 {
     public class GetHighscoresResponse : ApiResponse
     {
-        public Highscore[] Highscores { get; }
-        public int Count { get; }
+        public readonly Highscore[] Highscores;
+        public readonly int Count;
         public GetHighscoresResponse(Highscore[] highscores)
         {
             ResponseId = ResponseId.GetHighscores;

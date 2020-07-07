@@ -20,13 +20,15 @@ namespace qsrv.ApiRequests
 
         public ApiRequest Deserialize()
         {
-            return ApiRequestId switch
+            ApiRequest request = ApiRequestId switch
             {
                 ApiRequestId.GetQuestions => JsonConvert.DeserializeObject<GetQuestionsRequest>(Json),
                 ApiRequestId.GetHighscores => JsonConvert.DeserializeObject<GetHighscoresRequest>(Json),
                 ApiRequestId.SetHighscore => JsonConvert.DeserializeObject<SetHighscoreRequest>(Json),
                 _ => null
             };
+            request.RequestId = ApiRequestId;
+            return request;
         }
     }
 
