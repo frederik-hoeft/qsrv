@@ -18,6 +18,8 @@ namespace qsrv
     {
         private bool isConnected = false;
 
+        public bool IsSynchonous { get; set; } = false;
+
         #region Constructor
 
         private ApiServer() : base(null)
@@ -61,7 +63,10 @@ namespace qsrv
 
         public static ApiServer CreateDummy()
         {
-            return new ApiServer();
+            return new ApiServer
+            {
+                IsSynchonous = true
+            };
         }
 
 #nullable disable

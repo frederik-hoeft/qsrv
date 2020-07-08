@@ -27,10 +27,18 @@ namespace qsrv.ApiRequests
                 ApiError.Throw(ApiErrorCode.InternalServerError, Context, "Stale Request: tried to process same request more than once.");
                 return;
             }
-            ManualResetEventSlim manualResetEvent = new ManualResetEventSlim(false);
-            manualResetEvent.Reset();
+            ManualResetEventSlim manualResetEvent;
+            if (server.IsSynchonous)
+            {
+                manualResetEvent = new ManualResetEventSlim(false);
+                manualResetEvent.Reset();
+            }
+            else
+            {
+                manualResetEvent = null;
+            }
             ProcessAsync(server, manualResetEvent);
-            manualResetEvent.Wait(Timeout.Infinite);
+            manualResetEvent?.Wait(Timeout.Infinite);
             isStale = true;
         }
 

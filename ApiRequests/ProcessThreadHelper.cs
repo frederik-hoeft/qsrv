@@ -14,7 +14,7 @@ namespace qsrv.ApiRequests
         }
         public void Dispose()
         {
-            manualResetEvent.Set();
+            manualResetEvent?.Set();
         }
     }
 }
