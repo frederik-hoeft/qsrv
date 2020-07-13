@@ -8,6 +8,7 @@ using washared;
 using qsrv.ApiResponses;
 using System.Threading;
 using System;
+using System.IO;
 
 namespace qsrv
 {
@@ -17,6 +18,8 @@ namespace qsrv
     public sealed class ApiServer : DisposableNetworkInterface
     {
         private bool isConnected = false;
+
+        public bool SetupFailed { get; private set; }
 
         public bool IsSynchonous { get; set; } = false;
 
@@ -33,9 +36,20 @@ namespace qsrv
             Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
             Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveTime, 10);
             Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveInterval, 5);
-            Socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.TcpKeepAliveRetryCount, 6);
+            Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.TcpKeepAliveRetryCount, 6);
             SslStream = new SslStream(NetworkStream);
-            SslStream.AuthenticateAsServer(MainServer.ServerCertificate, false, System.Security.Authentication.SslProtocols.Tls12, false);
+            try
+            {
+                SslStream.AuthenticateAsServer(MainServer.ServerCertificate, false, System.Security.Authentication.SslProtocols.Tls12, false);
+                SetupFailed = false;
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine("Client disconnected due to " + e.Message);
+                SetupFailed = true;
+                Dispose();
+                return;
+            }
             Network = new Network(this);
             isConnected = true;
         }
@@ -49,7 +63,12 @@ namespace qsrv
                 MainServer.ClientCount--;
                 return;
             }
+            Console.WriteLine("Client connected from " + socket.RemoteEndPoint.ToString());
             ApiServer server = new ApiServer(socket);
+            if (server.SetupFailed)
+            {
+                return;
+            }
             server.Serve();
         }
 
@@ -96,9 +115,9 @@ namespace qsrv
         private void PacketActionCallback(byte[] packet)
         {
             string json = Encoding.UTF8.GetString(packet);
-            SerializedApiRequest serializedApiRequest = JsonConvert.DeserializeObject<SerializedApiRequest>(json);
             try
             {
+                SerializedApiRequest serializedApiRequest = JsonConvert.DeserializeObject<SerializedApiRequest>(json);
                 ApiRequest apiRequest = serializedApiRequest.Deserialize();
                 if (apiRequest == null)
                 {

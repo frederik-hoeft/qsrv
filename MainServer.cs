@@ -26,8 +26,7 @@ namespace qsrv
 
         public static void Run()
         {
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress ipAddress = washared.Extensions.GetLocalIPAddress();
+            IPAddress ipAddress = IPAddress.Parse(Config.LocalIpAddress);
             if (ipAddress == null)
             {
                 Console.WriteLine("Unable to resolve IP address.");
@@ -38,6 +37,7 @@ namespace qsrv
             socket.Bind(localEndPoint);
             socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
             socket.Listen(16);
+            Console.WriteLine("Started Main Quiz Server on " + Config.LocalIpAddress + ":" + Config.LocalPort.ToString() + "!");
             while (true)
             {
                 Socket clientSocket = socket.Accept();
@@ -93,7 +93,7 @@ namespace qsrv
             {
                 return;
             }
-            string config = File.ReadAllText(@"Config\wamsrv.config.json");
+            string config = File.ReadAllText("Config" + Path.DirectorySeparatorChar + "wamsrv.config.json");
             Config = JsonConvert.DeserializeObject<WamsrvConfig>(config);
             ServerCertificate = new X509Certificate2(Config.PfxCertificatePath, Config.PfxPassword);
             configLoaded = true;

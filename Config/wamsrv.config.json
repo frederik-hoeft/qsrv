@@ -1,7 +1,8 @@
 {
   "DebuggingEnabled": true,
   "AdvancedErrorChecking": true,
-  "LocalPort": 11001,
+  "LocalPort": 12344,
+  "LocalIpAddress":  "192.168.178.21",
   "PfxCertificatePath": "certificate.pfx",
   "PfxPassword": "test",
   "SuppressCertificateErrors": true,
@@ -19,6 +20,6 @@
     "ServerSecret": "3Dtj+k2a3AhjvIySJ8+eufN2r+7FhQ1Kn+aibKyLu72BaSO1mDkmb5WYlzWuO12OlrGk2j6zZOJdUxc+E+gK2A=="
   },
   "WamsrvDevelopmentConfig": {
-    "BlockResponses": true
+    "BlockResponses": false
   }
 }
