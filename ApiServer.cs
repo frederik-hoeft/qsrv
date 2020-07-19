@@ -9,6 +9,7 @@ using qsrv.ApiResponses;
 using System.Threading;
 using System;
 using System.IO;
+using System.Diagnostics;
 
 namespace qsrv
 {
@@ -19,7 +20,7 @@ namespace qsrv
     {
         private bool isConnected = false;
 
-        public bool SetupFailed { get; private set; }
+        public bool SetupFailed { get; }
 
         public bool IsSynchonous { get; set; } = false;
 
@@ -76,7 +77,15 @@ namespace qsrv
         {
             if (!UnitTestDetector.IsInUnitTest && !MainServer.Config.WamsrvDevelopmentConfig.BlockResponses && isConnected)
             {
-                Network.Send(data);
+                Debug.WriteLine("(API) << " + data);
+                try
+                {
+                    Network.Send(data);
+                }
+                catch (IOException)
+                {
+                    Network.Abort();
+                }
             }
         }
 
@@ -115,6 +124,7 @@ namespace qsrv
         private void PacketActionCallback(byte[] packet)
         {
             string json = Encoding.UTF8.GetString(packet);
+            Debug.WriteLine("(API) >> " + json);
             try
             {
                 SerializedApiRequest serializedApiRequest = JsonConvert.DeserializeObject<SerializedApiRequest>(json);

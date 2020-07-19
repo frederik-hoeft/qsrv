@@ -29,29 +29,23 @@ namespace qsrv
 
         private static void Development()
         {
-            Highscore[] highscores = new Highscore[3];
-            highscores[0] = new Highscore("Player A", 1337);
-            highscores[1] = new Highscore("Player B", 13);
-            highscores[2] = new Highscore("Player C", 2);
-            GetHighscoresResponse response = new GetHighscoresResponse(highscores);
-            SerializedApiResponse serializedApiResponse = SerializedApiResponse.Create(response);
-            File.WriteAllText("GetHighscoresResponse.json", serializedApiResponse.Serialize());
+            AddQuestion();
         }
 
         private static void AddQuestion()
         {
             Question question = new Question(
-                "Wie heißt keine der Göttinen aus Ocarina of time?",
+                "",
                 new Answer[]
                 {
-                    new Answer("Ganon", true),
-                    new Answer("Nayru", false),
-                    new Answer("Din", false),
-                    new Answer("Farore", false)
+                    new Answer("", true),
+                    new Answer("", false),
+                    new Answer("", false),
+                    new Answer("", false)
                 },
-                Category.Nerdistan);
+                Category.Undefined);
             MainServer.AddQuestion(question);
-            Console.WriteLine("done!");
+            Console.WriteLine("Question added!");
         }
     }
 }
